@@ -1,10 +1,19 @@
 export function createRocket(gameWidth, gameElement, gameState, updateScoreCallback, checkCollisionCallback, updateLivesCallback, gameOverCallback) {
     const rocket = document.createElement('div');
+    const isObstacleUp = Math.random() < 0.5; // 50% de chance d'avoir un obstacle haut ou bas
     rocket.classList.add('rocket');
+    rocket.classList.add(isObstacleUp ? 'obstacle-up' : 'obstacle-down'); // Ajoute une classe pour différencier les obstacles
     gameElement.appendChild(rocket);
 
     let positionRocket = gameWidth;
     rocket.style.left = positionRocket + "px";
+
+    // Positionne l'obstacle en haut ou en bas
+    if (isObstacleUp) {
+        rocket.style.bottom = "200px"; // Position de l'obstacle haut
+    } else {
+        rocket.style.bottom = "30px"; // Position de l'obstacle bas
+    }
 
     const moveInterval = setInterval(() => {
         if (positionRocket < 0) {
