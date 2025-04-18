@@ -150,3 +150,10 @@
     cursor: pointer;
     font-size: 16px;
 }
+
+#stats-container {
+    margin-top: 20px;
+    text-align: left;
+    color: white;
+    font-size: 18px;
+}

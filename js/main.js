@@ -1,4 +1,4 @@
-import { startGame } from './game.js';
+import { startGame, showStats } from './game.js';
 import { updateLivesDisplay, updateScoreDisplay } from './hud.js';
 import { handlePlayerMovement, jump } from './player.js';
 import { createRocket, checkCollision } from './obstacle.js';
@@ -52,11 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const showGameOver = () => {
-        gameOverScreen.classList.remove('hidden');
-        gameState.gameOver = true;
-    };
-
     let scoreInterval; // Variable pour gérer l'incrémentation du score
     
     const startScoreIncrement = () => {
@@ -70,6 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateScore();
             }
         }, 1000);
+    };
+
+    const showGameOver = () => {
+        gameOverScreen.classList.remove('hidden');
+        gameState.gameOver = true;
+        
+        showStats(gameState)
     };
     
     // Configuration de la sélection de personnage
