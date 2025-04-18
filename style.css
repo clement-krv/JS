@@ -113,6 +113,10 @@
     transition: border-color 0.3s;
 }
 
+.character:hover img {
+    cursor: pointer;
+}
+
 .character.selected img {
     border-color: gold;
 }
