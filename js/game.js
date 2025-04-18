@@ -20,9 +20,6 @@ export function startGame(gameState, elements, callbacks) {
     // Lancement de la boucle des obstacles et activation des mouvements
     loopObstacle();
     addMovementListener();
-
-    // Cacher l'écran de démarrage
-    startScreen.classList.add('hidden');
 }
 
 export function showStats(gameState) {

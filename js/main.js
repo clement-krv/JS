@@ -52,16 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    let scoreInterval; // Variable pour gérer l'incrémentation du score
-    
+    let scoreInterval;
     const startScoreIncrement = () => {
-        if (scoreInterval) {
-            clearInterval(scoreInterval); // Réinitialise tout intervalle précédent
-        }
-    
+        if (scoreInterval) clearInterval(scoreInterval);
         scoreInterval = setInterval(() => {
             if (!gameState.gameOver) {
-                gameState.score += 1; // Incrémente le score
+                gameState.score += 1;
                 updateScore();
             }
         }, 1000);
@@ -70,18 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const showGameOver = () => {
         gameOverScreen.classList.remove('hidden');
         gameState.gameOver = true;
-        
-        showStats(gameState)
+        showStats(gameState);
     };
-    
-    // Configuration de la sélection de personnage
+
     setupCharacterSelection(characterSelectionScreen, game, gameState, player, () => {
-        startScoreIncrement(); // Démarre l'incrémentation du score
+        startScoreIncrement();
         startGame(gameState, { gameOverScreen, player }, { updateLives, updateScore, loopObstacle, addMovementListener });
     });
-    
+
     restartButton.addEventListener('click', () => {
-        startScoreIncrement(); // Redémarre l'incrémentation du score
+        startScoreIncrement();
         startGame(gameState, { gameOverScreen, player }, { updateLives, updateScore, loopObstacle, addMovementListener });
     });
 
