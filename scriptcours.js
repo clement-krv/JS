@@ -30,7 +30,7 @@ function updateLimits() {
 }
 
 // Mouvements du joueur
-document.addEventListener('keydown', (event) => {
+function handlePlayerMovement(event) {
     const { gameWidth, playerWidth } = updateLimits();
 
     if (event.key === "ArrowRight") {
@@ -46,6 +46,13 @@ document.addEventListener('keydown', (event) => {
     if (event.key === " ") jump();
 
     player.style.left = positionX + "px"; // Applique le mouvement horizontal
+}
+
+// Ajouter l'écouteur d'événements uniquement si le jeu n'est pas terminé
+document.addEventListener('keydown', (event) => {
+    if (!gameOver) {
+        handlePlayerMovement(event);
+    }
 });
 
 // Gestion du saut
@@ -101,12 +108,6 @@ function createRocket() {
                 clearInterval(moveInterval);
                 rocket.remove();
                 lives--;
-
-                // Vérifier si le bas du joueur touche le haut de l'obstacle
-                if (player.getBoundingClientRect().bottom <= rocket.getBoundingClientRect().top) {
-                    score += 50; // Le joueur gagne 50 points si le bas du joueur touche le haut de l'obstacle
-                    updateScoreDisplay(); // Met à jour le score
-                }
 
                 updateLivesDisplay(); // Met à jour l'affichage des vies
 
@@ -179,6 +180,11 @@ function startGame() {
     updateLivesDisplay(); // Met à jour l'affichage des vies
     updateScoreDisplay(); // Met à jour le score
     loopObstacle();
+
+    // Réactive les déplacements du joueur
+    document.addEventListener('keydown', (event) => {
+        handlePlayerMovement(event);
+    });
 }
 
 // Bouton "Rejouer"
