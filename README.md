@@ -49,7 +49,7 @@ Ce projet est un jeu de plateforme simple développé en HTML, CSS et JavaScript
 
 1. **Téléchargez ou clonez le projet** :
    ```bash
-   git clone https://github.com/votre-repo/jeu-plateforme.git
+   git clone https://github.com/JS/jeu-plateforme.git
    ```
 
 2. **Ouvrez le fichier `index.html`** :
