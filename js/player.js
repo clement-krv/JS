@@ -1,3 +1,4 @@
+// Fonction pour gérer le mouvement du joueur
 export function handlePlayerMovement(event, gameState, limits, jumpCallback) {
     if (gameState.gameOver) return;
 
@@ -21,7 +22,7 @@ export function handlePlayerMovement(event, gameState, limits, jumpCallback) {
         jumpCallback();
     }
 }
-
+// Fonction pour gérer le saut du joueur
 export function jump(gameState, playerElement) {
     if (gameState.isJumping || gameState.gameOver) return;
 

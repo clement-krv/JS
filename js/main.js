@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const restartButton = document.querySelector('#restart-button');
     const characterSelectionScreen = document.querySelector('#character-selection-screen');
 
+    // Les éléments de jeu par défaut
     const gameState = {
         gameOver: false,
         lives: 3,
@@ -20,12 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
         isJumping: false,
         score: 0,
         spawnDelay: 2000,
-        selectedCharacter: 'playerDK', // Par défaut
+        selectedCharacter: 'playerDK',
     };
 
     const updateLives = () => updateLivesDisplay(gameState.lives, livesContainer);
     const updateScore = () => updateScoreDisplay(gameState.score, scoreText);
 
+    // Fonction pour créer un obstacle
     const loopObstacle = () => {
         if (!gameState.gameOver) {
             createRocket(
@@ -41,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Fonction pour ajouter un écouteur d'événements pour le mouvement du joueur
     const addMovementListener = () => {
         document.addEventListener('keydown', (event) => {
             const limits = {

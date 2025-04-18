@@ -1,28 +1,27 @@
 export function createRocket(gameWidth, gameElement, gameState, updateScoreCallback, checkCollisionCallback, updateLivesCallback, gameOverCallback) {
     const rocket = document.createElement('div');
-    const isObstacleUp = Math.random() < 0.5; // 50% de chance d'avoir un obstacle haut ou bas
+    const isObstacleUp = Math.random() < 0.5; 
     rocket.classList.add('rocket');
-    rocket.classList.add(isObstacleUp ? 'obstacle-up' : 'obstacle-down'); // Ajoute une classe pour différencier les obstacles
+    rocket.classList.add(isObstacleUp ? 'obstacle-up' : 'obstacle-down'); 
     gameElement.appendChild(rocket);
 
     let positionRocket = gameWidth;
     rocket.style.left = positionRocket + "px";
 
-    // Positionne l'obstacle en haut ou en bas
     if (isObstacleUp) {
-        rocket.style.bottom = "200px"; // Position de l'obstacle haut
+        rocket.style.bottom = "200px"; 
     } else {
-        rocket.style.bottom = "30px"; // Position de l'obstacle bas
+        rocket.style.bottom = "30px"; 
     }
 
     const moveInterval = setInterval(() => {
         if (positionRocket < 0) {
             clearInterval(moveInterval);
             rocket.remove();
-            gameState.score += 10; // +10 points pour chaque obstacle qui atteint le mur gauche
+            gameState.score += 10; 
             updateScoreCallback();
 
-            // Réduction exponentielle du délai de spawn à partir de 150 points
+
             if (gameState.score >= 150) {
                 gameState.spawnDelay = Math.max(500, gameState.spawnDelay * 0.9);
             }

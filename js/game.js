@@ -2,26 +2,24 @@ export function startGame(gameState, elements, callbacks) {
     const { gameOverScreen, player, startScreen } = elements;
     const { updateLives, updateScore, loopObstacle, addMovementListener } = callbacks;
 
-    // Réinitialisation de l'état du jeu
     gameOverScreen.classList.add('hidden');
     gameState.gameOver = false;
-    gameState.lives = 3; // Réinitialisation des vies
-    gameState.score = 0; // Réinitialisation du score
+    gameState.lives = 3; 
+    gameState.score = 0; 
     gameState.position.x = 0;
     gameState.position.y = 30;
-    gameState.spawnDelay = 2000; // Réinitialisation du délai de spawn
+    gameState.spawnDelay = 2000; 
     player.style.left = gameState.position.x + "px";
     player.style.bottom = gameState.position.y + "px";
 
-    // Mise à jour de l'affichage
     updateLives();
     updateScore();
 
-    // Lancement de la boucle des obstacles et activation des mouvements
     loopObstacle();
     addMovementListener();
 }
 
+// Fonction pour afficher les statistiques de jeu
 export function showStats(gameState) {
     const stats = JSON.parse(localStorage.getItem('gameStats')) || {
         totalGames: 0,
@@ -30,7 +28,7 @@ export function showStats(gameState) {
         characters: {},
     };
 
-    // Mise à jour des statistiques
+
     stats.totalGames += 1;
     stats.scores.push(gameState.score);
     if (gameState.lives > 0) {
@@ -39,7 +37,7 @@ export function showStats(gameState) {
     stats.characters[gameState.selectedCharacter] = 
         (stats.characters[gameState.selectedCharacter] || 0) + 1;
 
-    // Stockage des statistiques dans le localStorage
+
     localStorage.setItem('gameStats', JSON.stringify(stats));
 
     // Calcul des statistiques
@@ -47,7 +45,7 @@ export function showStats(gameState) {
     const topScore = Math.max(...stats.scores);
     const mainCharacter = Object.entries(stats.characters).reduce((a, b) => b[1] > a[1] ? b : a)[0];
 
-    // Affichage des statistiques
+
     const statsContainer = document.getElementById('stats-container');
     statsContainer.innerHTML = `
         <h2>Statistiques</h2>
