@@ -45,7 +45,6 @@ export function showStats(gameState) {
     // Calcul des statistiques
     const averageScore = stats.scores.reduce((sum, score) => sum + score, 0) / stats.scores.length;
     const topScore = Math.max(...stats.scores);
-    const winRate = ((stats.victories / stats.totalGames) * 100).toFixed(2);
     const mainCharacter = Object.entries(stats.characters).reduce((a, b) => b[1] > a[1] ? b : a)[0];
 
     // Affichage des statistiques
@@ -55,7 +54,6 @@ export function showStats(gameState) {
         <p>Nombre de parties : ${stats.totalGames}</p>
         <p>Score moyen : ${averageScore.toFixed(2)}</p>
         <p>Top 1 score : ${topScore}</p>
-        <p>Taux de victoire : ${winRate}%</p>
         <p>Personnage principal : ${mainCharacter}</p>
     `;
     statsContainer.classList.remove('hidden');
