@@ -1,4 +1,4 @@
-export function createRocket(gameWidth, gameElement, score, updateScoreCallback, checkCollisionCallback, gameState, updateLivesCallback, gameOverCallback) {
+export function createRocket(gameWidth, gameElement, gameState, updateScoreCallback, checkCollisionCallback, updateLivesCallback, gameOverCallback) {
     const rocket = document.createElement('div');
     rocket.classList.add('rocket');
     gameElement.appendChild(rocket);
@@ -10,9 +10,13 @@ export function createRocket(gameWidth, gameElement, score, updateScoreCallback,
         if (positionRocket < 0) {
             clearInterval(moveInterval);
             rocket.remove();
-            score.value += 10;
+            gameState.score += 10; // +10 points pour chaque obstacle qui atteint le mur gauche
             updateScoreCallback();
 
+            // Réduction exponentielle du délai de spawn à partir de 150 points
+            if (gameState.score >= 150) {
+                gameState.spawnDelay = Math.max(500, gameState.spawnDelay * 0.9);
+            }
         } else {
             positionRocket -= 10;
             rocket.style.left = positionRocket + "px";
@@ -22,7 +26,6 @@ export function createRocket(gameWidth, gameElement, score, updateScoreCallback,
                 rocket.remove();
                 gameState.lives--;
 
-                console.log(`Il vous reste ${gameState.lives} vies`); // Affiche la perte de vie
                 updateLivesCallback();
 
                 if (gameState.lives <= 0) {

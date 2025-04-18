@@ -8,13 +8,27 @@
     <meta name="keywords" content="HTML, CSS, JavaScript">
 
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script> 
+    <script type="module" src="js/main.js" defer></script>
 
     <title>Jeu plateforme</title>
 </head>
 <body>
+    <div id="character-selection-screen">
+        <h1>Choisissez votre personnage</h1>
+        <div id="character-options">
+            <div class="character" data-character="playerDK">
+                <img src="assets/playerDK.webp" alt="Donkey Kong">
+                <p>Donkey Kong</p>
+            </div>
+            <div class="character" data-character="playerMario">
+                <img src="assets/playerMario.webp" alt="Mario">
+                <p>Mario</p>
+            </div>
+        </div>
+        <button id="start-game-button" class="hidden">Start</button>
+    </div>
 
-    <div id="game">
+    <div id="game" class="hidden">
         <div id="lives-container"></div>
         <div id="score-container">
             <p id="score-text">Score : 0</p>
@@ -25,11 +39,6 @@
             <h1 id="game-over-text">Game Over</h1>
             <button id="restart-button">Rejouer</button>
         </div>
-
-        <div id="start-screen">
-            <button id="start-button">Start</button>
-        </div>
     </div>
-
 </body>
 </html>
