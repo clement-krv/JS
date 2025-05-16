@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         score: 0,
         spawnDelay: 2000,
         selectedCharacter: 'playerDK',
+        platforms: [] 
     };
 
     const updateLives = () => updateLivesDisplay(gameState.lives, livesContainer);

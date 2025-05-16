@@ -35,6 +35,7 @@
 }
 
 #game-over-screen {
+    z-index: 1000;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -136,4 +137,15 @@
     text-align: left;
     color: white;
     font-size: 18px;
+}
+
+.platform {
+    z-index: 1;
+    width: 100px;
+    height: 20px;
+    background-color: #8B4513;  
+    position: absolute;
+    bottom: 50px; 
+    left: 0;
+    border-radius: 5px;
 }

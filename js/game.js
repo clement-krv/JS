@@ -8,16 +8,107 @@ export function startGame(gameState, elements, callbacks) {
     gameState.score = 0; 
     gameState.position.x = 0;
     gameState.position.y = 30;
-    gameState.spawnDelay = 2000; 
+    gameState.spawnDelay = 2000;
+    gameState.platforms = []; // Initialisation des plateformes
+
     player.style.left = gameState.position.x + "px";
     player.style.bottom = gameState.position.y + "px";
 
     updateLives();
     updateScore();
 
+    // Générer les plateformes
+    generatePlatforms(gameState);
+
     loopObstacle();
     addMovementListener();
+
+    startPlatformCollisionLoop(gameState, player);
 }
+
+// FONCTION : GÉNÉRER 2 PLATEFORMES ÉLOIGNÉES
+function generatePlatforms(gameState) {
+    const gameElement = document.querySelector('#game');
+    gameState.platforms = []; // reset
+
+    for (let i = 0; i < 2; i++) {
+        const platform = document.createElement('div');
+        platform.classList.add('platform');
+
+        let positionX, tooClose;
+        do {
+            positionX = Math.random() * (gameElement.offsetWidth - 100);
+            tooClose = gameState.platforms.some(p => {
+                const existingX = parseFloat(p.style.left);
+                return Math.abs(existingX - positionX) < 150;
+            });
+        } while (tooClose);
+
+        const positionY = Math.random() * 150 + 100;
+        platform.style.left = `${positionX}px`;
+        platform.style.bottom = `${positionY}px`;
+
+        gameElement.appendChild(platform);
+        gameState.platforms.push(platform);
+    }
+}
+
+
+function checkPlatformCollisions(gameState, player) {
+    const playerRect = player.getBoundingClientRect();
+
+    gameState.platforms.forEach(platform => {
+        const platformRect = platform.getBoundingClientRect();
+
+        const hitsFromAbove =
+            playerRect.bottom <= platformRect.top + 5 &&
+            playerRect.bottom >= platformRect.top - 10 &&
+            playerRect.right > platformRect.left &&
+            playerRect.left < platformRect.right &&
+            gameState.isJumping === false;
+
+        const hitsFromBelow =
+            playerRect.top >= platformRect.bottom - 5 &&
+            playerRect.top <= platformRect.bottom + 10 &&
+            playerRect.right > platformRect.left &&
+            playerRect.left < platformRect.right &&
+            gameState.isJumping === true;
+
+        if (hitsFromAbove) {
+            // Bloquer le joueur au-dessus de la plateforme
+            const platformTop = platform.offsetTop;
+            const gameTop = game.offsetTop;
+
+            gameState.position.y = platformTop - player.offsetHeight - gameTop;
+            player.style.bottom = gameState.position.y + "px";
+            gameState.isJumping = false;
+        }
+
+        if (hitsFromBelow) {
+            // Supprimer la plateforme si on la frappe par dessous
+            platform.remove();
+            gameState.platforms = gameState.platforms.filter(p => p !== platform);
+        }
+    });
+}
+
+
+
+export function gameOver() {
+    document.querySelector('#game-over-screen').classList.remove('hidden');
+    gameState.gameOver = true;
+}
+
+
+function startPlatformCollisionLoop(gameState, player) {
+    function loop() {
+        if (gameState.gameOver) return; 
+        checkPlatformCollisions(gameState, player);
+        requestAnimationFrame(loop); 
+    }
+    requestAnimationFrame(loop); 
+}
+
 
 // Fonction pour afficher les statistiques de jeu
 export function showStats(gameState) {
