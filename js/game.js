@@ -46,6 +46,7 @@ export function generatePlatforms(gameState) {
     }
 }
 
+
 export function checkPlatformCollisions(gameState, player) {
     const game = document.querySelector('#game');
     const gameRect = game.getBoundingClientRect();
@@ -53,41 +54,50 @@ export function checkPlatformCollisions(gameState, player) {
 
     let landed = false;
 
-    gameState.platforms.forEach(platform => {
+    for (let platform of gameState.platforms) {
         const platformRect = platform.getBoundingClientRect();
 
-        const isAbove =
-            playerRect.bottom <= platformRect.top + 5 &&
-            playerRect.bottom >= platformRect.top - 10 &&
-            playerRect.right > platformRect.left &&
-            playerRect.left < platformRect.right &&
-            gameState.velocity.y <= 0;
+        const playerBottom = playerRect.bottom;
+        const platformTop = platformRect.top;
+
+        const verticalDistance = Math.abs(playerBottom - platformTop);
+        const isHorizontallyAligned =
+            playerRect.right > platformRect.left + 5 &&
+            playerRect.left < platformRect.right - 5;
+
+        // Tolérance augmentée pour éviter de "sauter" une frame
+        if (
+            verticalDistance <= 15 &&
+            isHorizontallyAligned &&
+            gameState.velocity.y <= 0
+        ) {
+            const newY = game.offsetHeight - (platformTop - gameRect.top) - player.offsetHeight;
+
+            if (gameState.position.y >= newY - 5) {
+                gameState.position.y = newY;
+                gameState.velocity.y = 0;
+                player.style.bottom = `${newY}px`;
+                landed = true;
+                console.log("✅ Plateforme atteinte ou maintenue");
+            }
+        }
 
         const isBelow =
             playerRect.top >= platformRect.bottom - 10 &&
             playerRect.top <= platformRect.bottom + 10 &&
-            playerRect.right > platformRect.left &&
-            playerRect.left < platformRect.right &&
+            isHorizontallyAligned &&
             gameState.velocity.y > 0;
-
-        if (isAbove) {
-            const platformTop = platformRect.top - gameRect.top;
-            const newY = game.offsetHeight - platformTop - player.offsetHeight;
-
-            gameState.position.y = newY;
-            player.style.bottom = `${newY}px`;
-            gameState.velocity.y = 0;
-            landed = true;
-        }
 
         if (isBelow) {
             platform.remove();
             gameState.platforms = gameState.platforms.filter(p => p !== platform);
+            console.log("💥 Plateforme supprimée (frappée par dessous)");
         }
-    });
+    }
 
-    gameState.isOnGround = landed
+    return landed;
 }
+
 
 export function showStats(gameState) {
     const stats = JSON.parse(localStorage.getItem('gameStats')) || {

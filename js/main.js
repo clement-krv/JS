@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function loop() {
             if (gameState.gameOver) return;
 
+            // Mouvement horizontal
             if (gameState.keys.right) {
                 gameState.velocity.x = Math.min(gameState.velocity.x + 0.2, 3);
             } else if (gameState.keys.left) {
@@ -63,34 +64,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (Math.abs(gameState.velocity.x) < 0.05) gameState.velocity.x = 0;
             }
 
+            // Appliquer vitesse horizontale
+            gameState.position.x += gameState.velocity.x;
+
+            // Appliquer gravité toujours (même si on est au sol), mais annuler si on est "sur quelque chose"
             gameState.velocity.y -= gameState.gravity;
             if (gameState.velocity.y < -2.5) {
                 gameState.velocity.y = -2.5;
             }
 
-            gameState.position.x += gameState.velocity.x;
             gameState.position.y += gameState.velocity.y;
 
+            // Limite horizontale
             const maxX = game.offsetWidth - player.offsetWidth;
             gameState.position.x = Math.max(0, Math.min(maxX, gameState.position.x));
 
-            checkPlatformCollisions(gameState, player);
-            
-            if (gameState.position.y <= 30 && !gameState.isOnGround) {
+            // Collision plateforme
+            const landed = checkPlatformCollisions(gameState, player);
+
+            // Si on touche le sol
+            if (gameState.position.y <= 30) {
                 gameState.position.y = 30;
                 gameState.velocity.y = 0;
                 gameState.isOnGround = true;
+                console.log("🟦 Sol atteint");
+            } else if (landed) {
+                // Si on touche une plateforme
+                gameState.velocity.y = 0;
+                gameState.isOnGround = true;
+            } else {
+                // En l'air
+                gameState.isOnGround = false;
             }
 
-
+            // Appliquer le style
             player.style.left = `${gameState.position.x}px`;
             player.style.bottom = `${gameState.position.y}px`;
+
+            // Debug
+            console.log(`Y=${gameState.position.y.toFixed(2)} | vy=${gameState.velocity.y.toFixed(2)} | onGround=${gameState.isOnGround}`);
 
             requestAnimationFrame(loop);
         }
 
         requestAnimationFrame(loop);
     }
+
+
 
     document.addEventListener('keydown', (e) => {
         if (e.key === "ArrowRight") gameState.keys.right = true;
