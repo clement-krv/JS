@@ -118,9 +118,11 @@ Les statistiques sont sauvegardées dans le `localStorage` et sont persistantes 
 
 ---
 
+## Bug connu
+
+- J'ai un bug qui est inexplicable pour les plateformes, j'arrive à bien les supprimer si je tape par en dessous, mais lorsque j'arrive par dessus alors sur une frame je suis dessus puis je redescend, j'ai beau triturer le code dans tous les sens je n'ai pas réussi à comprendre le comportement de ce bug, pareil en debug tout est normal juste une variable booléenne qui s'actualise que sur une frame et pas les autres.
+- Le retour à l'accueil, il est impossible de retourner à la sélection de personnage sans faire F5. Sinon cela casse tout le visuel....
+
 ## Auteur
 
 - **Clément KERVICHE** - Projet réalisé dans le cadre du cours ESGI.
-
-
-
