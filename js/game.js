@@ -86,7 +86,7 @@ export function checkPlatformCollisions(gameState, player) {
         }
     });
 
-    gameState.isOnGround = landed || gameState.position.y <= 30;
+    gameState.isOnGround = landed
 }
 
 export function showStats(gameState) {

@@ -74,12 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const maxX = game.offsetWidth - player.offsetWidth;
             gameState.position.x = Math.max(0, Math.min(maxX, gameState.position.x));
 
-            if (gameState.position.y <= 30) {
+            checkPlatformCollisions(gameState, player);
+            
+            if (gameState.position.y <= 30 && !gameState.isOnGround) {
                 gameState.position.y = 30;
                 gameState.velocity.y = 0;
+                gameState.isOnGround = true;
             }
 
-            checkPlatformCollisions(gameState, player);
 
             player.style.left = `${gameState.position.x}px`;
             player.style.bottom = `${gameState.position.y}px`;
