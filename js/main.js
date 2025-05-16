@@ -13,22 +13,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const restartButton = document.querySelector('#restart-button');
     const characterSelectionScreen = document.querySelector('#character-selection-screen');
 
-    // Les éléments de jeu par défaut
+    // État initial du jeu
     const gameState = {
         gameOver: false,
         lives: 3,
         position: { x: 0, y: 30 },
+        velocity: { x: 0, y: 0 },
         isJumping: false,
+        isOnGround: false,
         score: 0,
         spawnDelay: 2000,
         selectedCharacter: 'playerDK',
-        platforms: [] 
+        platforms: [],
+        gravity: 0.5,
+        jumpStrength: 15,
+        keys: {
+            left: false,
+            right: false
+        }
     };
 
     const updateLives = () => updateLivesDisplay(gameState.lives, livesContainer);
     const updateScore = () => updateScoreDisplay(gameState.score, scoreText);
 
-    // Fonction pour créer un obstacle
     const loopObstacle = () => {
         if (!gameState.gameOver) {
             createRocket(
@@ -44,18 +51,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Fonction pour ajouter un écouteur d'événements pour le mouvement du joueur
-    const addMovementListener = () => {
-        document.addEventListener('keydown', (event) => {
-            const limits = {
-                gameWidth: game.offsetWidth,
-                playerWidth: player.offsetWidth,
-            };
-            handlePlayerMovement(event, gameState, limits, () => jump(gameState, player));
-            player.style.left = gameState.position.x + 'px';
-        });
-    };
+    // 🎯 Boucle de mouvement fluide
+    function startMovementLoop() {
+        function loop() {
+            if (gameState.gameOver) return;
 
+            // Accélération horizontale
+            if (gameState.keys.right) {
+                gameState.velocity.x = Math.min(gameState.velocity.x + 0.2, 3);
+            } else if (gameState.keys.left) {
+                gameState.velocity.x = Math.max(gameState.velocity.x - 0.2, -3);
+            } else {
+                gameState.velocity.x *= 0.8;
+                if (Math.abs(gameState.velocity.x) < 0.05) gameState.velocity.x = 0;
+            }
+
+            // Gravité
+            if (!gameState.isOnGround) {
+                gameState.velocity.y -= gameState.gravity;
+            
+                if (gameState.velocity.y < -2.5) {
+                    gameState.velocity.y = -2.5;
+                }
+            }
+
+
+            // Mise à jour des positions
+            gameState.position.x += gameState.velocity.x;
+            gameState.position.y += gameState.velocity.y;
+
+            // Clamp horizontal
+            const maxX = game.offsetWidth - player.offsetWidth;
+            gameState.position.x = Math.max(0, Math.min(maxX, gameState.position.x));
+
+            // Sol
+            if (gameState.position.y <= 30) {
+                gameState.position.y = 30;
+                gameState.velocity.y = 0;
+                gameState.isOnGround = true;
+            } else {
+                gameState.isOnGround = false;
+            }
+
+            // Application CSS
+            player.style.left = gameState.position.x + 'px';
+            player.style.bottom = gameState.position.y + 'px';
+
+            requestAnimationFrame(loop);
+        }
+
+        requestAnimationFrame(loop);
+    }
+
+    // 🎮 Gestion des touches maintenues
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "ArrowRight") gameState.keys.right = true;
+        if (e.key === "ArrowLeft") gameState.keys.left = true;
+        if (e.key === " " && !gameState.isJumping && gameState.position.y <= 31) {
+            jump(gameState, player);
+        }
+    });
+
+
+    document.addEventListener('keyup', (e) => {
+        if (e.key === "ArrowRight") gameState.keys.right = false;
+        if (e.key === "ArrowLeft") gameState.keys.left = false;
+    });
+
+    // Score auto +1 par seconde
     let scoreInterval;
     const startScoreIncrement = () => {
         if (scoreInterval) clearInterval(scoreInterval);
@@ -75,16 +138,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupCharacterSelection(characterSelectionScreen, game, gameState, player, () => {
         startScoreIncrement();
-        startGame(gameState, { gameOverScreen, player }, { updateLives, updateScore, loopObstacle, addMovementListener });
+        startMovementLoop(); // Lancer la physique
+        startGame(gameState, { gameOverScreen, player }, {
+            updateLives, updateScore, loopObstacle
+        });
     });
 
     restartButton.addEventListener('click', () => {
         document.querySelectorAll('.platform').forEach(p => p.remove());
-    startScoreIncrement();
-    startGame(gameState, { gameOverScreen, player }, {
-        updateLives, updateScore, loopObstacle, addMovementListener
+        startScoreIncrement();
+        startMovementLoop(); // Redémarrer la physique
+        startGame(gameState, { gameOverScreen, player }, {
+            updateLives, updateScore, loopObstacle
+        });
     });
-});
 
     updateLives();
     updateScore();
