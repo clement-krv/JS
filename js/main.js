@@ -79,9 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     restartButton.addEventListener('click', () => {
-        startScoreIncrement();
-        startGame(gameState, { gameOverScreen, player }, { updateLives, updateScore, loopObstacle, addMovementListener });
+        document.querySelectorAll('.platform').forEach(p => p.remove());
+    startScoreIncrement();
+    startGame(gameState, { gameOverScreen, player }, {
+        updateLives, updateScore, loopObstacle, addMovementListener
     });
+});
 
     updateLives();
     updateScore();

@@ -9,7 +9,7 @@ export function startGame(gameState, elements, callbacks) {
     gameState.position.x = 0;
     gameState.position.y = 30;
     gameState.spawnDelay = 2000;
-    gameState.platforms = []; // Initialisation des plateformes
+    gameState.platforms = []; 
 
     player.style.left = gameState.position.x + "px";
     player.style.bottom = gameState.position.y + "px";
@@ -17,7 +17,7 @@ export function startGame(gameState, elements, callbacks) {
     updateLives();
     updateScore();
 
-    // Générer les plateformes
+
     generatePlatforms(gameState);
 
     loopObstacle();
@@ -26,11 +26,20 @@ export function startGame(gameState, elements, callbacks) {
     startPlatformCollisionLoop(gameState, player);
 }
 
-// FONCTION : GÉNÉRER 2 PLATEFORMES ÉLOIGNÉES
 function generatePlatforms(gameState) {
     const gameElement = document.querySelector('#game');
-    gameState.platforms = []; // reset
 
+    // 🔥 Supprimer toutes les plateformes précédentes
+    if (gameState.platforms && Array.isArray(gameState.platforms)) {
+        gameState.platforms.forEach(p => {
+            if (p.parentNode) {
+                p.parentNode.removeChild(p);
+            }
+        });
+    }
+    gameState.platforms = [];
+
+    // ... puis on recrée 2 nouvelles plateformes :
     for (let i = 0; i < 2; i++) {
         const platform = document.createElement('div');
         platform.classList.add('platform');
@@ -44,7 +53,7 @@ function generatePlatforms(gameState) {
             });
         } while (tooClose);
 
-        const positionY = Math.random() * 150 + 100;
+        const positionY = Math.random() * 120 + 80;
         platform.style.left = `${positionX}px`;
         platform.style.bottom = `${positionY}px`;
 
@@ -52,6 +61,8 @@ function generatePlatforms(gameState) {
         gameState.platforms.push(platform);
     }
 }
+
+
 
 
 function checkPlatformCollisions(gameState, player) {
